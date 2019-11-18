@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.binarywang.demo.wx.mp.mapper.MsgHistoryMapper" >
+  <resultMap id="BaseResultMap" type="com.github.binarywang.demo.wx.mp.pojo.MsgHistory" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="from_user" property="fromUser" jdbcType="VARCHAR" />
+    <result column="to_user" property="toUser" jdbcType="VARCHAR" />
+    <result column="msg_type" property="msgType" jdbcType="VARCHAR" />
+    <result column="msg_content" property="msgContent" jdbcType="VARCHAR" />
+    <result column="msg_id" property="msgId" jdbcType="BIGINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, from_user, to_user, msg_type, msg_content, msg_id, create_time, update_time
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistoryExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_msg_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_msg_history
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_msg_history
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistoryExample" >
+    delete from t_msg_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistory" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_msg_history (from_user, to_user, msg_type, 
+      msg_content, msg_id, create_time, 
+      update_time)
+    values (#{fromUser,jdbcType=VARCHAR}, #{toUser,jdbcType=VARCHAR}, #{msgType,jdbcType=VARCHAR}, 
+      #{msgContent,jdbcType=VARCHAR}, #{msgId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistory" >
+    <selectKey resultType="java.lang.Long" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_msg_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="fromUser != null" >
+        from_user,
+      </if>
+      <if test="toUser != null" >
+        to_user,
+      </if>
+      <if test="msgType != null" >
+        msg_type,
+      </if>
+      <if test="msgContent != null" >
+        msg_content,
+      </if>
+      <if test="msgId != null" >
+        msg_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="fromUser != null" >
+        #{fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="toUser != null" >
+        #{toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="msgContent != null" >
+        #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="msgId != null" >
+        #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistoryExample" resultType="java.lang.Integer" >
+    select count(*) from t_msg_history
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update t_msg_history
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.fromUser != null" >
+        from_user = #{record.fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.toUser != null" >
+        to_user = #{record.toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msgType != null" >
+        msg_type = #{record.msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msgContent != null" >
+        msg_content = #{record.msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msgId != null" >
+        msg_id = #{record.msgId,jdbcType=BIGINT},
+      </if>
+      <if test="record.createTime != null" >
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update t_msg_history
+    set id = #{record.id,jdbcType=BIGINT},
+      from_user = #{record.fromUser,jdbcType=VARCHAR},
+      to_user = #{record.toUser,jdbcType=VARCHAR},
+      msg_type = #{record.msgType,jdbcType=VARCHAR},
+      msg_content = #{record.msgContent,jdbcType=VARCHAR},
+      msg_id = #{record.msgId,jdbcType=BIGINT},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistory" >
+    update t_msg_history
+    <set >
+      <if test="fromUser != null" >
+        from_user = #{fromUser,jdbcType=VARCHAR},
+      </if>
+      <if test="toUser != null" >
+        to_user = #{toUser,jdbcType=VARCHAR},
+      </if>
+      <if test="msgType != null" >
+        msg_type = #{msgType,jdbcType=VARCHAR},
+      </if>
+      <if test="msgContent != null" >
+        msg_content = #{msgContent,jdbcType=VARCHAR},
+      </if>
+      <if test="msgId != null" >
+        msg_id = #{msgId,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.github.binarywang.demo.wx.mp.pojo.MsgHistory" >
+    update t_msg_history
+    set from_user = #{fromUser,jdbcType=VARCHAR},
+      to_user = #{toUser,jdbcType=VARCHAR},
+      msg_type = #{msgType,jdbcType=VARCHAR},
+      msg_content = #{msgContent,jdbcType=VARCHAR},
+      msg_id = #{msgId,jdbcType=BIGINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

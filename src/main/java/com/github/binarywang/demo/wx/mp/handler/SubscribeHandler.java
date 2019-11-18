@@ -2,6 +2,11 @@ package com.github.binarywang.demo.wx.mp.handler;
 
 import java.util.Map;
 
+import com.github.binarywang.demo.wx.mp.dao.UserDao;
+import com.github.binarywang.demo.wx.mp.pojo.User;
+import com.github.binarywang.demo.wx.mp.service.UserService;
+import com.github.binarywang.demo.wx.mp.utils.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.binarywang.demo.wx.mp.builder.TextBuilder;
@@ -17,7 +22,10 @@ import me.chanjar.weixin.mp.bean.result.WxMpUser;
  */
 @Component
 public class SubscribeHandler extends AbstractHandler {
-
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private UserService userService;
     @Override
     public WxMpXmlOutMessage handle(WxMpXmlMessage wxMessage,
                                     Map<String, Object> context, WxMpService weixinService,
@@ -31,6 +39,20 @@ public class SubscribeHandler extends AbstractHandler {
                 .userInfo(wxMessage.getFromUser(), null);
             if (userWxInfo != null) {
                 // TODO 可以添加关注用户到本地数据库
+                logger.info("有人关注了公众微信，openID为-{}",userWxInfo.getOpenId());
+                User user=new User();
+                user.setOpenId(userWxInfo.getOpenId());
+                user.setCreateTime(DateUtils.getLocalDate());
+                user.setImgUrl(userWxInfo.getHeadImgUrl());
+                user.setSex(userWxInfo.getSex().shortValue());
+                //0 关注
+                user.setStatus((short)0);
+                user.setNickName(userWxInfo.getNickname());
+                user.setUpdateTime(user.getUpdateTime());
+                Integer addResult = userService.insertUser(user);
+                if (addResult.equals(1)){
+                    logger.info("公众微信有新关注的用户,用户是-{}",user);
+                }
             }
         } catch (WxErrorException e) {
             if (e.getError().getErrorCode() == 48001) {

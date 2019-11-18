@@ -4,7 +4,9 @@ import java.util.Date;
 
 public class StudentTeacherShip {
     private Long id;
-
+    /**
+     * userId
+     */
     private Long studentId;
 
     private Long teacherId;

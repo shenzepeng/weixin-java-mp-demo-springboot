@@ -21,6 +21,8 @@ public class User {
 
     private String givenName;
 
+    private Short status;
+
     public Long getId() {
         return id;
     }
@@ -91,5 +93,13 @@ public class User {
 
     public void setGivenName(String givenName) {
         this.givenName = givenName == null ? null : givenName.trim();
+    }
+
+    public Short getStatus() {
+        return status;
+    }
+
+    public void setStatus(Short status) {
+        this.status = status;
     }
 }
