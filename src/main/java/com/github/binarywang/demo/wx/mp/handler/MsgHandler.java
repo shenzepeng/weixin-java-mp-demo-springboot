@@ -50,15 +50,20 @@ public class MsgHandler extends AbstractHandler {
                                     WxSessionManager sessionManager) {
 
         if (!wxMessage.getMsgType().equals(XmlMsgType.EVENT)) {
+            //保留用户信息到本地
+            try {
+                addUserIfo(weixinService,wxMessage);
+            } catch (WxErrorException e) {
+                logger.info("添加用户失败,该用户的openID为-{}",wxMessage.getFromUser());
+            }
             //将消息保存到本地
             try {
                 saveMsgInLocal(wxMessage);
-                addUserIfo(wxMessage.getFromUser(),weixinService,wxMessage);
             } catch (Exception e) {
                 logger.info("消息保存本地失败-{}", e.getMessage());
             }
         }
-        String content = "详情了解,请添加微信:id_jx520";
+        String content = "如何在校招季年薪20w+，了解详情,请添加微信:id_jx520";
         if (StringUtils.isEmpty(wxMessage.getContent())) {
             return null;
         }
@@ -93,7 +98,7 @@ public class MsgHandler extends AbstractHandler {
                     content="签到成功";
                     return new TextBuilder().build(content, wxMessage, weixinService);
                 }else {
-                    content="您以签到成功，不需要再次签到";
+                    content="您已签到成功，不需要再次签到";
                     return new TextBuilder().build(content, wxMessage, weixinService);
                 }
             }else {
@@ -107,7 +112,6 @@ public class MsgHandler extends AbstractHandler {
     }
 
     private void saveMsgInLocal(WxMpXmlMessage wxMessage) {
-
         MsgHistory msgHistory = new MsgHistory();
         msgHistory.setCreateTime(DateUtils.getLocalDate());
         msgHistory.setFromUser(wxMessage.getFromUser());
@@ -144,32 +148,35 @@ public class MsgHandler extends AbstractHandler {
         return null;
     }
 
-    private void addUserIfo(String openId,WxMpService wxMpService,WxMpXmlMessage wxMessage){
+    private void addUserIfo(WxMpService wxMpService,WxMpXmlMessage wxMessage) throws WxErrorException {
+        logger.info("开始获取用户信息，用户的openId为-{}",wxMessage.getFromUser());
         // 获取微信用户基本信息
         try {
-            WxMpUser userWxInfo = wxMpService.getUserService()
-                .userInfo(wxMessage.getFromUser(), null);
-            if (userWxInfo != null) {
-                // TODO 可以添加关注用户到本地数据库
-                logger.info("有人关注了公众微信，openID为-{}",userWxInfo.getOpenId());
+            //语言
+            String lang = "zh_CN";
+            WxMpUser userIfo = wxMpService.getUserService().userInfo(wxMessage.getFromUser(), lang);
+            logger.info("从微信平台获取的用户信息为-{}",userIfo);
+            if (userIfo != null) {
                 User user=new User();
-                user.setOpenId(userWxInfo.getOpenId());
+                user.setOpenId(userIfo.getOpenId());
                 user.setCreateTime(DateUtils.getLocalDate());
-                user.setImgUrl(userWxInfo.getHeadImgUrl());
-                user.setSex(userWxInfo.getSex().shortValue());
+                user.setImgUrl(userIfo.getHeadImgUrl());
+                user.setSex(userIfo.getSex().shortValue());
                 //0 关注
                 user.setStatus((short)0);
-                user.setNickName(userWxInfo.getNickname());
+                user.setNickName(userIfo.getNickname());
                 user.setUpdateTime(user.getUpdateTime());
+                logger.info("发送消息的用户，用户信息为-{}",user);
                 Integer addResult = userService.insertUser(user);
                 if (addResult.equals(1)){
                     logger.info("公众微信有新关注的用户,用户是-{}",user);
                 }
             }
         } catch (WxErrorException e) {
-            if (e.getError().getErrorCode() == 48001) {
-                this.logger.info("该公众号没有获取用户信息权限！");
-            }
+            logger.info("异常信息-{}",e);
+//            if (e.getError().getErrorCode() == 48001) {
+//                this.logger.info("该公众号没有获取用户信息权限！");
+//            }
         }
     }
 

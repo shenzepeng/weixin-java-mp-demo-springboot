@@ -55,6 +55,7 @@ public class SubscribeHandler extends AbstractHandler {
                 }
             }
         } catch (WxErrorException e) {
+            logger.info("添加user信息异常，异常详情为-{}",e);
             if (e.getError().getErrorCode() == 48001) {
                 this.logger.info("该公众号没有获取用户信息权限！");
             }

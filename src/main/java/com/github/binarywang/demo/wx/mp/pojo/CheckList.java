@@ -1,7 +1,9 @@
 package com.github.binarywang.demo.wx.mp.pojo;
 
-import java.util.Date;
+import lombok.ToString;
 
+import java.util.Date;
+@ToString
 public class CheckList {
     private Long id;
 

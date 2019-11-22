@@ -1,6 +1,5 @@
 package com.github.binarywang.demo.wx.mp.utils;
 
-import com.github.binarywang.demo.wx.mp.cache.AccessTokenCache;
 import com.github.binarywang.demo.wx.mp.constant.WxRequestConstants;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,11 +12,7 @@ import java.util.HashMap;
  */
 @Slf4j
 public class AccessTokenUtils {
-    public static void updateAccessToken(){
-        String accessTokenFromWxServer = getAccessTokenFromWxServer();
-        AccessTokenCache.setAccessToken(accessTokenFromWxServer);
-        log.info("本次更新的accessToken为-{}",accessTokenFromWxServer);
-    }
+
 
     private static String getAccessTokenFromWxServer(){
         HashMap<String,String> hashMap=new HashMap<>();

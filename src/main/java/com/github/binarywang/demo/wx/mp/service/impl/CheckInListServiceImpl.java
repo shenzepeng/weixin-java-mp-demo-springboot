@@ -2,8 +2,10 @@ package com.github.binarywang.demo.wx.mp.service.impl;
 
 import com.github.binarywang.demo.wx.mp.dao.CheckInDao;
 import com.github.binarywang.demo.wx.mp.dao.CheckInListDao;
+import com.github.binarywang.demo.wx.mp.pojo.CheckIn;
 import com.github.binarywang.demo.wx.mp.pojo.CheckList;
 import com.github.binarywang.demo.wx.mp.service.CheckListService;
+import com.github.binarywang.demo.wx.mp.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -21,10 +23,18 @@ import java.util.List;
 public class CheckInListServiceImpl implements CheckListService {
     @Autowired
     private CheckInListDao checkInListDao;
+    @Autowired
+    private CheckInDao checkInDao;
     @Override
     public Integer insertCheckList(CheckList checkList) {
         if (checkList==null){
             throw  new RuntimeException("没有传参");
+        }
+        //签到时间是否过期
+        Long checkInId = checkList.getCheckInId();
+        CheckIn checkInById = checkInDao.findCheckInById(checkInId);
+        if (checkInById.getExpiredTime().after(DateUtils.getLocalDate())){
+            throw new RuntimeException("签到时间已过期，无法在签到");
         }
         if (!StringUtils.isEmpty(checkList.getStudentId())&&
             !StringUtils.isEmpty(checkList.getCheckInId())){

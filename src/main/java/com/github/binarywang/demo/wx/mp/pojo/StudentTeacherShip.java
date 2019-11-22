@@ -1,7 +1,9 @@
 package com.github.binarywang.demo.wx.mp.pojo;
 
-import java.util.Date;
+import lombok.ToString;
 
+import java.util.Date;
+@ToString
 public class StudentTeacherShip {
     private Long id;
     /**
@@ -57,7 +59,7 @@ public class StudentTeacherShip {
         this.createTime = createTime;
     }
 
-    public Date getUpdateTime() {
+    public Date getUpdateTime(Date localDate) {
         return updateTime;
     }
 

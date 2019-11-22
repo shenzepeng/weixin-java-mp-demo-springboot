@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Integer insertUser(User user) {
         if (user==null){
-            return null;
+            return 0;
         }
         String openId = user.getOpenId();
         if (StringUtils.isEmpty(openId)){

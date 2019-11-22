@@ -2,6 +2,7 @@ package com.github.binarywang.demo.wx.mp.controller;
 
 import com.github.binarywang.demo.wx.mp.common.SzpJsonResult;
 import com.github.binarywang.demo.wx.mp.dto.CheckInListDto;
+import com.github.binarywang.demo.wx.mp.pojo.CheckIn;
 import com.github.binarywang.demo.wx.mp.pojo.CheckList;
 import com.github.binarywang.demo.wx.mp.service.CheckInService;
 import com.github.binarywang.demo.wx.mp.service.CheckListService;
@@ -25,10 +26,15 @@ public class CheckInController {
      * @return
      */
     @PostMapping
-    public SzpJsonResult<Integer> addCheckIn(@RequestBody CheckList checkList){
-        return SzpJsonResult.ok(checkListService.insertCheckList(checkList));
+    public SzpJsonResult<Integer> addCheckIn(@RequestBody CheckIn checkIn){
+        return SzpJsonResult.ok(checkInService.addCheck(checkIn));
     }
 
+    /**
+     * 拿到签到数据
+     * @param checkId
+     * @return
+     */
     @GetMapping
     public SzpJsonResult<CheckInListDto> getSignSatuation(Long checkId){
         return SzpJsonResult.ok(checkInService.findCheckInListDto(checkId));
